@@ -6,7 +6,7 @@ import java.util.List;
 
 public class EmployeeRepository {
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         getConnection();
 
         Employee employee = new Employee();
@@ -15,7 +15,7 @@ public class EmployeeRepository {
         employee.setEmail(" ");
         employee.setCountry(" ");
         save(employee);
-    }
+    }*/
 
     public static Connection getConnection() {
 
