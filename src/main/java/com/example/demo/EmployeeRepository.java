@@ -11,10 +11,11 @@ public class EmployeeRepository {
 
         Employee employee = new Employee();
 
-        employee.setName("oleg");
-        employee.setEmail(" ");
-        employee.setCountry(" ");
+        employee.setName("Dima");
+        employee.setEmail("logu123dima@gmail.com");
+        employee.setCountry("Ukraine");
         save(employee);
+        System.out.println(employee);
     }
 
     public static Connection getConnection() {
@@ -22,17 +23,17 @@ public class EmployeeRepository {
         Connection connection = null;
         String url = "jdbc:postgresql://localhost:5432/employee";
         String user = "postgres";
-        String password = "postgres";
+        String password = "Visual studiodima203qQ";
 
         try {
             connection = DriverManager.getConnection(url, user, password);
-            if (connection != null) {
-                System.out.println("Connected to the PostgreSQL server successfully.");
-            } else {
-                System.out.println("Failed to make connection!");
-            }
+
         } catch (SQLException sqlException) {
             System.out.println(sqlException);
+        }     if (connection != null) {
+            System.out.println("Connected to the PostgreSQL server successfully.");
+        } else {
+            System.out.println("Failed to make connection!");
         }
         return connection;
     }
