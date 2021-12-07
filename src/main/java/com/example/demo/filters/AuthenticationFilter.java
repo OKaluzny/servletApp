@@ -37,7 +37,12 @@ public class AuthenticationFilter implements Filter {
         this.context.log("Requested Resource::http://localhost:8080" + uri);
 
         HttpSession session = req.getSession(false);
-        if (session == null && !(uri.endsWith("demo/saveServlet") || uri.endsWith("demo/loginServlet") || uri.endsWith("demo/viewServlet"))) {
+
+        if (session == null && !(uMap.containsKey("uri1")
+                || uMap.containsKey("uri2")
+                || uMap.containsKey("uri3")
+                || uMap.containsKey("uri4")
+                || uMap.containsKey("uri5"))) {
             this.context.log("<<< Unauthorized access request");
             PrintWriter out = res.getWriter();
             out.println("No access!!!");
