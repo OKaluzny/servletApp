@@ -38,16 +38,7 @@ public class AuthenticationFilter implements Filter {
         this.context.log("Requested Resource::http://localhost:8080" + uri);
 
         HttpSession session = req.getSession(false);
-
-
-        if (session == null && !(
-                uMap.containsKey("uri1")
-                        || uMap.containsKey("uri2")
-                        || uMap.containsKey("uri3")
-                        || uMap.containsKey("uri4")
-                        // TODO: remove
-                        || uMap.containsKey("uri5")
-        )) {
+        if (session == null && !(uri.endsWith("demo/saveServlet") || uri.endsWith("demo/loginServlet") || uri.endsWith("demo/viewServlet"))) {
             this.context.log("<<< Unauthorized access request");
             PrintWriter out = res.getWriter();
             out.println("No access!!!");
@@ -56,13 +47,7 @@ public class AuthenticationFilter implements Filter {
         }
     }
 
-
     public void destroy() {
         //close any resources here
-    }
-
-    private class UriMap {
-        Map<String, Object> uMap = new HashMap<>();
-
     }
 }
