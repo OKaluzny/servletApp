@@ -35,11 +35,9 @@ public class AuthenticationFilter implements Filter {
         uMap.put("uri5", uri.endsWith("demo/putServlet"));
 
 
-
         this.context.log("Requested Resource::http://localhost:8080" + uri);
 
         HttpSession session = req.getSession(false);
-
 
 
         if (session == null && !(
