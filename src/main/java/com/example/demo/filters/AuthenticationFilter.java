@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 @WebFilter("/*")
 public class AuthenticationFilter implements Filter {
@@ -25,11 +27,29 @@ public class AuthenticationFilter implements Filter {
 
         String uri = req.getRequestURI();
 
+        Map<String, Object> uMap = new HashMap<>();
+        uMap.put("uri1", uri.endsWith("demo/saveServlet"));
+        uMap.put("uri2", uri.endsWith("demo/loginServlet"));
+        uMap.put("uri3", uri.endsWith("demo/viewServlet"));
+        uMap.put("uri4", uri.endsWith("demo/viewByIDServlet"));
+        uMap.put("uri5", uri.endsWith("demo/putServlet"));
+
+
+
         this.context.log("Requested Resource::http://localhost:8080" + uri);
 
         HttpSession session = req.getSession(false);
 
-        if (session == null && !(uri.endsWith("demo/saveServlet") || uri.endsWith("demo/loginServlet") || uri.endsWith("demo/viewServlet"))) {
+
+
+        if (session == null && !(
+                uMap.containsKey("uri1")
+                        || uMap.containsKey("uri2")
+                        || uMap.containsKey("uri3")
+                        || uMap.containsKey("uri4")
+                        // TODO: remove
+                        || uMap.containsKey("uri5")
+        )) {
             this.context.log("<<< Unauthorized access request");
             PrintWriter out = res.getWriter();
             out.println("No access!!!");
@@ -38,7 +58,13 @@ public class AuthenticationFilter implements Filter {
         }
     }
 
+
     public void destroy() {
         //close any resources here
+    }
+
+    private class UriMap {
+        Map<String, Object> uMap = new HashMap<>();
+
     }
 }

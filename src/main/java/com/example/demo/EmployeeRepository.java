@@ -6,16 +6,16 @@ import java.util.List;
 
 public class EmployeeRepository {
 
-    /*public static void main(String[] args) {
-        getConnection();
+    public static void main(String[] args) {
+        /*getConnection();
 
         Employee employee = new Employee();
 
         employee.setName("oleg");
         employee.setEmail(" ");
         employee.setCountry(" ");
-        save(employee);
-    }*/
+        save(employee);*/
+    }
 
     public static Connection getConnection() {
 

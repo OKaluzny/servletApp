@@ -17,6 +17,7 @@ public class ViewServlet extends HttpServlet {
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
 
+
         List<Employee> list = EmployeeRepository.getAllEmployees();
 
         for (Employee employee : list) {
