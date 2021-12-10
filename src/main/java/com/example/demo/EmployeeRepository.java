@@ -37,20 +37,21 @@ public class EmployeeRepository {
         return connection;
     }
 
-    public static int save(Employee employee) {
+    public static int save(Employee employee) throws SQLException {
         int status = 0;
+        Connection connection = EmployeeRepository.getConnection();
         try {
-            Connection connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement("insert into users(name,email,country) values (?,?,?)");
             ps.setString(1, employee.getName());
             ps.setString(2, employee.getEmail());
             ps.setString(3, employee.getCountry());
 
             status = ps.executeUpdate();
-            connection.close();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }finally {
+            connection.close();
         }
         return status;
     }
