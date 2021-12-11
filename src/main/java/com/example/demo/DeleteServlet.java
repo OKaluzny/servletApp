@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/deleteServlet")
 public class DeleteServlet extends HttpServlet {
@@ -14,7 +15,11 @@ public class DeleteServlet extends HttpServlet {
 
         String sid = request.getParameter("id");
         int id = Integer.parseInt(sid);
-        EmployeeRepository.delete(id);
+        try {
+            EmployeeRepository.delete(id);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         response.sendRedirect("viewServlet");
     }
 }

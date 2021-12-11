@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 @WebServlet("/putServlet")
 public class PutServlet extends HttpServlet {
@@ -29,7 +30,12 @@ public class PutServlet extends HttpServlet {
         employee.setEmail(email);
         employee.setCountry(request.getParameter("country"));
 
-        int status = EmployeeRepository.update(employee);
+        int status = 0;
+        try {
+            status = EmployeeRepository.update(employee);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         if (status > 0) {
             response.sendRedirect("viewServlet");
