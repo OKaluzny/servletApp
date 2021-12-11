@@ -52,6 +52,6 @@ public class AuthenticationFilter implements Filter {
     }
 
     public void destroy() {
-          //close any resources here
+        //close any resources here
     }
 }
