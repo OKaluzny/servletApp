@@ -6,7 +6,12 @@ import java.util.List;
 
 public class EmployeeRepository {
 
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws SQLException {
+
+        EmployeeConnection.Connect();
+
+
         /*getConnection();
 
         Employee employee = new Employee();
@@ -39,93 +44,90 @@ public class EmployeeRepository {
 
     public static int save(Employee employee) throws SQLException {
         int status = 0;
-        Connection connection = EmployeeRepository.getConnection();
         try {
-            PreparedStatement ps = connection.prepareStatement("insert into users(name,email,country) values (?,?,?)");
-            ps.setString(1, employee.getName());
-            ps.setString(2, employee.getEmail());
-            ps.setString(3, employee.getCountry());
+            PreparedStatement savePrepared = PreparedStatements.savePrepared;
+            savePrepared.setString(1, employee.getName());
+            savePrepared.setString(2, employee.getEmail());
+            savePrepared.setString(3, employee.getCountry());
 
-            status = ps.executeUpdate();
+            status = savePrepared.executeUpdate();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
-        }finally {
-            connection.close();
+        } finally {
+            EmployeeConnection.Connect().close();
         }
         return status;
     }
 
-    public static int update(Employee employee) {
+    public static int update(Employee employee) throws SQLException {
 
         int status = 0;
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("update users set name=?,email=?,country=? where id=?");
-            ps.setString(1, employee.getName());
-            ps.setString(2, employee.getEmail());
-            ps.setString(3, employee.getCountry());
-            ps.setInt(4, employee.getId());
+            PreparedStatement updatePrepared = PreparedStatements.updatePrepared;
+            updatePrepared.setString(1, employee.getName());
+            updatePrepared.setString(2, employee.getEmail());
+            updatePrepared.setString(3, employee.getCountry());
+            updatePrepared.setInt(4, employee.getId());
 
-            status = ps.executeUpdate();
-            connection.close();
+            status = updatePrepared.executeUpdate();
 
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+        } finally {
+            EmployeeConnection.Connect().close();
         }
         return status;
     }
 
-    public static int delete(int id) {
+    public static int delete(int id) throws SQLException {
 
         int status = 0;
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("delete from users where id=?");
-            ps.setInt(1, id);
-            status = ps.executeUpdate();
-
-            connection.close();
+            PreparedStatement deletePrepared = PreparedStatements.deletePrepared;
+            deletePrepared.setInt(1, id);
+            status = deletePrepared.executeUpdate();
 
         } catch (SQLException exception) {
             exception.printStackTrace();
+        }finally {
+            EmployeeConnection.Connect().close();
         }
         return status;
     }
 
-    public static Employee getEmployeeById(int id) {
+    public static Employee getEmployeeById(int id) throws SQLException {
 
         Employee employee = new Employee();
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("select * from users where id=?");
-            ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+            PreparedStatement getById = PreparedStatements.getEmployeeById;
+            getById.setInt(1, id);
+            ResultSet rs = getById.executeQuery();
             if (rs.next()) {
                 employee.setId(rs.getInt(1));
                 employee.setName(rs.getString(2));
                 employee.setEmail(rs.getString(3));
                 employee.setCountry(rs.getString(4));
             }
-            connection.close();
 
         } catch (SQLException exception) {
             exception.printStackTrace();
+        }finally {
+            EmployeeConnection.Connect().close();
         }
         return employee;
     }
 
-    public static List<Employee> getAllEmployees() {
+    public static List<Employee> getAllEmployees() throws SQLException {
 
         List<Employee> listEmployees = new ArrayList<>();
 
         try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("select * from users");
-            ResultSet rs = ps.executeQuery();
+            PreparedStatement getAll = PreparedStatements.getAll;
+            ResultSet rs = getAll.executeQuery();
 
             while (rs.next()) {
 
@@ -138,10 +140,11 @@ public class EmployeeRepository {
 
                 listEmployees.add(employee);
             }
-            connection.close();
 
         } catch (SQLException e) {
             e.printStackTrace();
+        }finally {
+            EmployeeConnection.Connect().close();
         }
         return listEmployees;
     }
