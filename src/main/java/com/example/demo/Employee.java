@@ -8,7 +8,7 @@ public class Employee {
     private String email;
     private String phoneNumber;
     private int age;
-    private String position;
+    private boolean isMarried;
 
     public int getId() {
         return id;
@@ -57,14 +57,14 @@ public class Employee {
         this.age = age;
     }
 
-    public String getPosition() {
-        return position;
+
+    public boolean isMarried() {
+        return isMarried;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setMarried(boolean married) {
+        isMarried = married;
     }
-
 
     @Override
     public String toString() {
@@ -75,7 +75,7 @@ public class Employee {
                 ", email='" + email + '\'' +
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", age=" + age +
-                ", position='" + position + '\'' +
+                ", isMarried=" + isMarried +
                 '}';
     }
 }
