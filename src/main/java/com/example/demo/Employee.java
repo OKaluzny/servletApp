@@ -1,11 +1,14 @@
 package com.example.demo;
 
+import java.util.Locale;
+
 public class Employee {
 
     private int id;
     private String name;
     private String country;
     private String email;
+
 
     public int getId() {
         return id;
@@ -24,7 +27,7 @@ public class Employee {
     }
 
     public String getCountry() {
-        return country;
+        return country.toUpperCase(Locale.ROOT);
     }
 
     public void setCountry(String country) {

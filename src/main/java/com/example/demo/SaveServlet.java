@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 
 @WebServlet("/saveServlet")
 public class SaveServlet extends HttpServlet {
@@ -32,7 +33,12 @@ public class SaveServlet extends HttpServlet {
         //out.println(employee.toString());
         //out.println(EmployeeRepository.getConnection());
 
-        int status = EmployeeRepository.save(employee);
+        int status = 0;
+        try {
+            status = EmployeeRepository.save(employee);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         //out.println(status);
 
         if (status > 0) {

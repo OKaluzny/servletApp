@@ -21,17 +21,17 @@ public class LogoutServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("text/html");
         Cookie[] cookies = request.getCookies();
-        if(cookies != null){
-            for(Cookie cookie : cookies){
-                if(cookie.getName().equals("JSESSIONID")){
-                    System.out.println("JSESSIONID="+cookie.getValue());
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID")) {
+                    System.out.println("JSESSIONID=" + cookie.getValue());
                     break;
                 }
             }
         }
         HttpSession session = request.getSession(false);
-        System.out.println("User="+session.getAttribute("user"));
-        if(session != null){
+        System.out.println("User=" + session.getAttribute("user"));
+        if (session != null) {
             session.invalidate();
         }
         PrintWriter out = response.getWriter();
