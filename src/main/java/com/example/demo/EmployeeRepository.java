@@ -1,19 +1,20 @@
 package com.example.demo;
 
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeRepository {
+public final class EmployeeRepository {
 
     /*public static void main(String[] args) {
         getConnection();
 
         Employee employee = new Employee();
 
-        employee.setName("oleg");
-        employee.setEmail(" ");
-        employee.setCountry(" ");
+        employee.setName("Takeshi");
+        employee.setEmail("takeshi.jp@jmail.jp ");
+        employee.setCountry("Japan");
         save(employee);
     }*/
 
