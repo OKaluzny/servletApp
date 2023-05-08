@@ -7,16 +7,11 @@ import java.util.List;
 
 public final class EmployeeRepository {
 
-    /*public static void main(String[] args) {
+    public static void main(String[] args) {
         getConnection();
-
-        Employee employee = new Employee();
-
-        employee.setName("Takeshi");
-        employee.setEmail("takeshi.jp@jmail.jp ");
-        employee.setCountry("Japan");
+        Employee employee = new Employee("Takeshi", "takeshi.jp@jmail.jp", "Japan");
         save(employee);
-    }*/
+    }
 
     public static Connection getConnection() {
 
@@ -43,9 +38,9 @@ public final class EmployeeRepository {
         try {
             Connection connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement("insert into users(name,email,country) values (?,?,?)");
-            ps.setString(1, employee.getName());
-            ps.setString(2, employee.getEmail());
-            ps.setString(3, employee.getCountry());
+            ps.setString(1, employee.name());
+            ps.setString(2, employee.email());
+            ps.setString(3, employee.country());
 
             status = ps.executeUpdate();
             connection.close();
@@ -63,10 +58,10 @@ public final class EmployeeRepository {
         try {
             Connection connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement("update users set name=?,email=?,country=? where id=?");
-            ps.setString(1, employee.getName());
-            ps.setString(2, employee.getEmail());
-            ps.setString(3, employee.getCountry());
-            ps.setInt(4, employee.getId());
+            ps.setString(1, employee.name());
+            ps.setString(2, employee.email());
+            ps.setString(3, employee.country());
+            ps.setInt(4, employee.id());
 
             status = ps.executeUpdate();
             connection.close();
@@ -95,9 +90,9 @@ public final class EmployeeRepository {
         return status;
     }
 
-    public static Employee getEmployeeById(int id) {
+    public static List<Employee> getEmployeeById(int id) {
 
-        Employee employee = new Employee();
+        List<Employee> listEmployee = new ArrayList<>();
 
         try {
             Connection connection = EmployeeRepository.getConnection();
@@ -105,17 +100,20 @@ public final class EmployeeRepository {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                employee.setId(rs.getInt(1));
-                employee.setName(rs.getString(2));
-                employee.setEmail(rs.getString(3));
-                employee.setCountry(rs.getString(4));
+
+                Employee employee = new Employee(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4));
+                listEmployee.add(employee);
             }
             connection.close();
 
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
-        return employee;
+        return listEmployee;
     }
 
     public static List<Employee> getAllEmployees() {
@@ -129,12 +127,11 @@ public final class EmployeeRepository {
 
             while (rs.next()) {
 
-                Employee employee = new Employee();
-
-                employee.setId(rs.getInt(1));
-                employee.setName(rs.getString(2));
-                employee.setEmail(rs.getString(3));
-                employee.setCountry(rs.getString(4));
+                Employee employee = new Employee(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4));
 
                 listEmployees.add(employee);
             }

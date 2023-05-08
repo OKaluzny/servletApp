@@ -23,16 +23,11 @@ public class PutServlet extends HttpServlet {
         String name = request.getParameter("name");
         String email = request.getParameter("email");
 
-        Employee employee = new Employee();
-        employee.setId(id);
-        employee.setName(name);
-        employee.setEmail(email);
-        employee.setCountry(request.getParameter("country"));
+        Employee employee = new Employee(id, name, email, request.getParameter("country"));
 
         int status = EmployeeRepository.update(employee);
-
         if (status > 0) {
-            response.sendRedirect("viewServlet");
+            response.sendRedirect("viewByIDServlet?id=68");
         } else {
             out.println("Sorry! unable to update record");
         }

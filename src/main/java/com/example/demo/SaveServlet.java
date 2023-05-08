@@ -23,11 +23,7 @@ public class SaveServlet extends HttpServlet {
         String email = request.getParameter("email");
         String country = request.getParameter("country");
 
-        Employee employee = new Employee();
-
-        employee.setName(name);
-        employee.setEmail(email);
-        employee.setCountry(country);
+        Employee employee = new Employee(name, email, country);
 
         //out.println(employee.toString());
         //out.println(EmployeeRepository.getConnection());
