@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
+import java.util.Optional;
 
 
 @WebServlet("/viewByIDServlet")
@@ -19,7 +19,9 @@ public class ViewByIDServlet extends HttpServlet {
         String sid = request.getParameter("id");
         int id = Integer.parseInt(sid);
 
-        List<Employee> employee = EmployeeRepository.getEmployeeById(id);
+        //List<Employee> employee = EmployeeRepository.getEmployeeById(id);
+        //Optional<Employee> employee = EmployeeRepository.getEmployeeById(id);
+        Optional<Object> employee = EmployeeRepository.getEmployeeById(id);
 
         out.print(employee);
         out.close();
