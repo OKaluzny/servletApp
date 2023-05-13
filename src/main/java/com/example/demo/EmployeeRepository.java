@@ -4,6 +4,7 @@ package com.example.demo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public final class EmployeeRepository {
 
@@ -90,30 +91,32 @@ public final class EmployeeRepository {
         return status;
     }
 
-    public static List<Employee> getEmployeeById(int id) {
+    //public static List<Employee> getEmployeeById(int id) {
+    public static Optional<Object> getEmployeeById(int id) {
 
-        List<Employee> listEmployee = new ArrayList<>();
-
+        //List<Employee> listEmployee = new ArrayList<>();
+        Optional<Object> optionalEmployee = Optional.of(new Object());
         try {
             Connection connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement("select * from users where id=?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-
                 Employee employee = new Employee(
                         rs.getInt(1),
                         rs.getString(2),
                         rs.getString(3),
                         rs.getString(4));
-                listEmployee.add(employee);
+                optionalEmployee = Optional.of(employee);
+                //listEmployee.add(employee);
             }
             connection.close();
 
         } catch (SQLException exception) {
             exception.printStackTrace();
         }
-        return listEmployee;
+        //return listEmployee;
+        return optionalEmployee;
     }
 
     public static List<Employee> getAllEmployees() {
