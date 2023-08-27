@@ -1,11 +1,13 @@
 # servletApp
 
+
+
 Для того что бы запустить это приложение, необходимо:
 
 1. Сделать Fork данного проекта (приоритет) или клонировать репозиторий
 
 ```bash
-git clone https://github.com/OKaluzny/demoServlet.git
+git clone https://github.com/OKaluzny/servletApp.git
 ```
 
 2. Собрать это приложение с помощью maven 
@@ -23,16 +25,12 @@ mvn org.wildfly.plugins:wildfly-maven-plugin:2.0.2.Final:deploy
    
 5. Скачать и установить базу данных PostgreSQL
 ```bash
-create table users
+create table if not exists public.users
 (
-    id      serial not null
-        constraint users_pk
+    id      serial 
             primary key,
-    name    varchar,
-    email   varchar,
-    country varchar
+    name    varchar(255),
+    email   varchar(255),
+    country varchar(255)
 );
-
-alter table users
-    owner to postgres;
 ```

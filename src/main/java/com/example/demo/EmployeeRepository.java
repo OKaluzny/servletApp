@@ -8,11 +8,11 @@ import java.util.Optional;
 
 public final class EmployeeRepository {
 
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         getConnection();
         Employee employee = new Employee("Takeshi", "takeshi.jp@jmail.jp", "Japan");
         save(employee);
-    }
+    }*/
 
     public static Connection getConnection() {
 
@@ -59,6 +59,7 @@ public final class EmployeeRepository {
         try {
             Connection connection = EmployeeRepository.getConnection();
             PreparedStatement ps = connection.prepareStatement("update users set name=?,email=?,country=? where id=?");
+
             ps.setString(1, employee.name());
             ps.setString(2, employee.email());
             ps.setString(3, employee.country());

@@ -1,8 +1,7 @@
-CREATE TABLE users
+CREATE TABLE if not exists users
 (
-    id      Serial NOT NULL,
+    id      Serial primary key,
     name    VARCHAR(255),
     email   VARCHAR(255),
-    country VARCHAR(255),
-    PRIMARY KEY (id)
-)
+    country VARCHAR(255)
+);

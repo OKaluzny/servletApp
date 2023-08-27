@@ -1,1 +1,1 @@
-mvn clean package
+mvn clean package -Dmaven.plugin.validation=VERBOSE
