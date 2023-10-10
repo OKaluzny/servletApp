@@ -25,7 +25,13 @@ mvn org.wildfly.plugins:wildfly-maven-plugin:2.0.2.Final:deploy
    
 5. Скачать и установить базу данных PostgreSQL
 ```bash
-create table if not exists public.users
+
+DROP DATABASE Employee;
+
+CREATE DATABASE Employee;
+
+USE Employee;
+CREATE TABLE if not exists public.users
 (
     id      serial 
             primary key,
