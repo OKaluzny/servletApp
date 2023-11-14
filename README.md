@@ -13,17 +13,17 @@ git clone https://github.com/OKaluzny/servletApp.git
 2. Собрать это приложение с помощью maven 
 
 ```bash
-mvn clean install
+mvn clean install -Dmaven.plugin.validation=VERBOSE
 ```
 3. Скачать и установить WildFly https://www.wildfly.org/. Запустить WildFly. Перейти в каталог /bin и вызвать standalone
    далее задеплоить приложение с помощью команды
 
 ```bash
-mvn org.wildfly.plugins:wildfly-maven-plugin:2.0.2.Final:deploy
+mvn org.wildfly.plugins:wildfly-maven-plugin:4.2.0.Final:deploy
 ```
 4. Скачать и установить клиент запросов Postman
    
-5. Скачать и установить базу данных PostgreSQL
+5. Скачать и установить базу данных PostgreSQL, создать базу данных - Employee
 ```bash
 create table if not exists public.users
 (
