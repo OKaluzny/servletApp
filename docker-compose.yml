@@ -1,0 +1,55 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: servletapp-postgres
+    environment:
+      POSTGRES_DB: employee
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./initial.sql:/docker-entrypoint-initdb.d/initial.sql
+    networks:
+      - servletapp-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  wildfly:
+    image: quay.io/wildfly/wildfly:29.0.1.Final-jdk17
+    container_name: servletapp-wildfly
+    ports:
+      - "8080:8080"
+      - "9990:9990"
+    environment:
+      - WILDFLY_USER=admin
+      - WILDFLY_PASS=admin
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=employee
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+    volumes:
+      - ./target/demo.war:/opt/jboss/wildfly/standalone/deployments/demo.war
+      - ./wildfly-config:/opt/jboss/wildfly/standalone/configuration/custom
+    networks:
+      - servletapp-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      /bin/bash -c "
+      /opt/jboss/wildfly/bin/add-user.sh admin admin --silent &&
+      /opt/jboss/wildfly/bin/standalone.sh -b 0.0.0.0 -bmanagement 0.0.0.0
+      "
+
+volumes:
+  postgres_data:
+
+networks:
+  servletapp-network:
+    driver: bridge

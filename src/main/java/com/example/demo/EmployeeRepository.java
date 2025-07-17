@@ -5,8 +5,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public final class EmployeeRepository {
+
+    private static final Logger logger = Logger.getLogger(EmployeeRepository.class.getName());
 
     /*public static void main(String[] args) {
         getConnection();
@@ -17,9 +21,14 @@ public final class EmployeeRepository {
     public static Connection getConnection() {
 
         Connection connection = null;
-        String url = "jdbc:postgresql://localhost:5432/employee";
-        String user = "postgres";
-        String password = "postgres";
+        // Use environment variables for Docker compatibility, fallback to localhost for local development
+        String host = System.getenv("DB_HOST") != null ? System.getenv("DB_HOST") : "localhost";
+        String port = System.getenv("DB_PORT") != null ? System.getenv("DB_PORT") : "5432";
+        String database = System.getenv("DB_NAME") != null ? System.getenv("DB_NAME") : "employee";
+        String user = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : "postgres";
+        String password = System.getenv("DB_PASSWORD") != null ? System.getenv("DB_PASSWORD") : "postgres";
+
+        String url = "jdbc:postgresql://" + host + ":" + port + "/" + database;
 
         try {
             connection = DriverManager.getConnection(url, user, password);
@@ -29,7 +38,7 @@ public final class EmployeeRepository {
                 System.out.println("Failed to make connection!");
             }
         } catch (SQLException sqlException) {
-            System.out.println(sqlException);
+            logger.log(Level.SEVERE, "Failed to establish database connection", sqlException);
         }
         return connection;
     }
@@ -47,7 +56,7 @@ public final class EmployeeRepository {
             connection.close();
 
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to save employee", ex);
         }
         return status;
     }
@@ -69,7 +78,7 @@ public final class EmployeeRepository {
             connection.close();
 
         } catch (SQLException sqlException) {
-            sqlException.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to update employee", sqlException);
         }
         return status;
     }
@@ -87,7 +96,7 @@ public final class EmployeeRepository {
             connection.close();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to delete employee with id: " + id, exception);
         }
         return status;
     }
@@ -114,7 +123,7 @@ public final class EmployeeRepository {
             connection.close();
 
         } catch (SQLException exception) {
-            exception.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to get employee by id: " + id, exception);
         }
         //return listEmployee;
         return optionalEmployee;
@@ -142,7 +151,7 @@ public final class EmployeeRepository {
             connection.close();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Failed to get all employees", e);
         }
         return listEmployees;
     }
