@@ -1,4 +1,4 @@
-package com.example.demo.filters;
+package com.example.demo.filter;
 
 
 import jakarta.servlet.*;
@@ -8,7 +8,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebFilter("/*")
 public class AuthenticationFilter implements Filter {
@@ -25,28 +24,31 @@ public class AuthenticationFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
 
+        // Let error dispatches pass through so custom error pages render
+        if (req.getDispatcherType() == DispatcherType.ERROR) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         String uri = req.getRequestURI();
 
-        this.context.log("Requested Resource::http://localhost:8080" + uri);
+        this.context.log("Requested Resource::" + uri);
 
         HttpSession session = req.getSession(false);
+        boolean loggedIn = session != null && session.getAttribute("user") != null;
 
-        if (session == null && !(
-                uri.endsWith("demo/saveServlet") ||
-                        uri.endsWith("demo/viewByIDServlet") ||
-                        uri.endsWith("demo/loginServlet") ||
-                        uri.endsWith("demo/deleteServlet") ||
-                        uri.endsWith("demo/putServlet") ||
-                        uri.endsWith("demo/viewServlet"))) {
-            this.context.log("<<< Unauthorized access request");
-            PrintWriter out = res.getWriter();
-            out.println("No access!!!");
-        } else {
+        boolean publicPage = uri.endsWith("demo/viewByIDServlet") ||
+                uri.endsWith("demo/loginServlet") ||
+                uri.endsWith("demo/viewServlet");
+
+        if (loggedIn || publicPage) {
             chain.doFilter(request, response);
+        } else {
+            this.context.log("<<< Unauthorized access request");
+            res.sendRedirect(req.getContextPath() + "/loginServlet");
         }
     }
 
     public void destroy() {
-        //// TODO: 30-Nov-23 close any resources here
     }
 }

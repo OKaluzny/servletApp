@@ -1,84 +1,200 @@
+[![CI](https://github.com/OKaluzny/servletApp/actions/workflows/ci.yml/badge.svg)](https://github.com/OKaluzny/servletApp/actions/workflows/ci.yml)
+
 # servletApp
 
-Java servlet application with PostgreSQL database support.
+Навчальний проєкт на Java, який демонструє основні можливості **Servlet API**.
+Застосунок — простий CRUD для сутності Employee (працівник) з веб-інтерфейсом на JSP.
 
-## Quick Start with Docker (Recommended)
+## Що вивчається у цьому проєкті
 
-The easiest way to run this application is using Docker Compose:
+| Технологія | Де подивитися | Що робить |
+|---|---|---|
+| **Servlets** | `servlet/` | Обробляють HTTP-запити (GET, POST). Кожен сервлет — окрема сторінка або дія |
+| **Filters** | `filter/` | Перехоплюють запити _до_ того, як вони потраплять у сервлет. Використовуються для авторизації та логування |
+| **Listeners** | `listener/` | Реагують на події: старт застосунку, створення/видалення сесії, вхідний запит |
+| **JSP + JSTL** | `webapp/WEB-INF/views/` | Шаблони HTML-сторінок. JSTL (`<c:forEach>`, `<c:if>`) дозволяє використовувати цикли та умови прямо в HTML |
+| **RequestDispatcher** | `ViewServlet.java` та ін. | `forward()` — передає запит із сервлета в JSP для відмальовування. `jsp:include` — вставляє спільний header/footer |
+| **Error Pages** | `webapp/WEB-INF/error/` | Кастомні сторінки помилок 404 та 500, налаштовані у `web.xml` |
+| **File Upload** | `FileUploadServlet.java` | Завантаження файлів через `@MultipartConfig` |
+| **web.xml** | `webapp/WEB-INF/web.xml` | Дескриптор розгортання — конфігурація застосунку (параметри, error pages) |
 
-### Prerequisites
-- Docker and Docker Compose installed
-- Maven (for building)
+## Структура проєкту
 
-### Running with Docker
+```
+src/main/java/com/example/demo/
+│
+├── auth/                         # Автентифікація
+│   ├── LoginServlet.java         #   Сторінка входу (GET — форма, POST — перевірка логіна)
+│   └── LogoutServlet.java        #   Вихід — видаляє сесію та cookie
+│
+├── filter/                       # Фільтри (перехоплюють УСІ запити)
+│   ├── AuthenticationFilter.java #   Перевіряє, чи авторизований користувач
+│   └── RequestLoggingFilter.java #   Логує кожен запит у консоль
+│
+├── listener/                     # Слухачі подій
+│   ├── AppContextListener.java   #   Викликається при старті/зупинці застосунку
+│   ├── SessionListener.java      #   Викликається при створенні/видаленні сесії
+│   └── RequestListener.java      #   Викликається при кожному HTTP-запиті
+│
+├── model/
+│   └── Employee.java             # Модель даних (id, name, email, country)
+│
+├── repository/
+│   └── EmployeeRepository.java   # Робота з БД через JDBC (SQL-запити)
+│
+├── servlet/                      # Основні сервлети
+│   ├── ViewServlet.java          #   Список усіх працівників
+│   ├── ViewByIDServlet.java      #   Деталі одного працівника
+│   ├── SaveServlet.java          #   Створення нового працівника
+│   ├── EditEmployeeServlet.java  #   Редагування працівника
+│   ├── PutServlet.java           #   Збереження змін
+│   ├── DeleteServlet.java        #   Видалення працівника
+│   └── FileUploadServlet.java    #   Завантаження файлів
+│
+└── util/
+    └── DatabaseCheck.java        # Перевірка підключення до БД
 
-1. Clone the repository:
+src/main/webapp/WEB-INF/
+├── views/                        # JSP-сторінки
+│   ├── header.jsp                #   Спільна шапка (підключається через jsp:include)
+│   ├── footer.jsp                #   Спільний підвал
+│   ├── login.jsp                 #   Форма входу
+│   ├── employeeList.jsp          #   Таблиця всіх працівників
+│   ├── employeeDetail.jsp        #   Картка працівника
+│   ├── employeeForm.jsp          #   Форма створення/редагування
+│   └── upload.jsp                #   Форма завантаження файлу
+├── error/
+│   ├── 404.jsp                   #   Сторінка «Не знайдено»
+│   └── 500.jsp                   #   Сторінка «Помилка сервера»
+└── web.xml                       # Конфігурація застосунку
+```
+
+## Як це працює (для початківців)
+
+### Шлях запиту
+
+```
+Браузер → Filter → Servlet → Repository → БД
+                       ↓
+                 RequestDispatcher.forward()
+                       ↓
+                    JSP-сторінка → HTML → Браузер
+```
+
+1. Користувач відкриває URL, наприклад `/demo/viewServlet`
+2. **Filter** перехоплює запит — перевіряє авторизацію, логує
+3. **Servlet** отримує запит, звертається до **Repository** за даними з БД
+4. Servlet кладе дані у `request.setAttribute()` і викликає `forward()` на JSP
+5. **JSP** генерує HTML, використовуючи дані з request, і надсилає відповідь у браузер
+
+### Авторизація
+
+- При спробі зайти на захищену сторінку без авторизації — редирект на `/demo/loginServlet`
+- Публічні сторінки (перегляд списку та деталей працівника) доступні без входу
+- Для редагування, створення, видалення та завантаження файлів потрібно увійти
+
+## Сторінки застосунку
+
+| Сторінка | URL | Потрібен логін? |
+|---|---|---|
+| Список працівників | `/demo/viewServlet` | Ні |
+| Деталі працівника | `/demo/viewByIDServlet?id=1` | Ні |
+| Створити працівника | `/demo/saveServlet` | Так |
+| Редагувати | `/demo/editEmployee?id=1` | Так |
+| Видалити | `/demo/deleteServlet?id=1` | Так |
+| Завантаження файлу | `/demo/uploadServlet` | Так |
+| Вхід | `/demo/loginServlet` | Ні |
+| Вихід | `/demo/logoutServlet` | — |
+
+**Логін:** `admin` **Пароль:** `password`
+
+> Облікові дані налаштовуються у файлі `web.xml` (параметри `app.auth.user` та `app.auth.password`).
+
+## Запуск через Docker (рекомендовано)
+
+Найпростіший спосіб — Docker піднімає і базу даних, і сервер автоматично.
+
+### Що потрібно встановити
+
+1. **Java 17+** — [завантажити](https://adoptium.net/)
+2. **Maven** — [завантажити](https://maven.apache.org/download.cgi)
+3. **Docker Desktop** — [завантажити](https://www.docker.com/products/docker-desktop/)
+
+### Покроковий запуск
+
+**Крок 1.** Клонуйте репозиторій:
 ```bash
 git clone https://github.com/OKaluzny/servletApp.git
 cd servletApp
 ```
 
-2. Build and run with Docker:
+**Крок 2.** Зберіть проєкт (створить файл `target/demo.war`):
 ```bash
-# Linux/Mac
-./docker-build.sh
-
-# Windows
-docker-build.bat
+mvn clean package
 ```
 
-3. Access the application:
-- Web Application: http://localhost:8080/demo
-- WildFly Admin Console: http://localhost:9990 (admin/admin)
-- PostgreSQL: localhost:5432 (postgres/postgres)
-
-### Docker Commands
+**Крок 3.** Запустіть контейнери:
 ```bash
-# Start services
 docker-compose up -d
+```
 
-# View logs
-docker-compose logs -f
+Ця команда підніме два контейнери:
+- **PostgreSQL** — база даних на порту `5432`
+- **WildFly** — сервер застосунків на порту `8080`
 
-# Stop services
+**Крок 4.** Зачекайте ~15 секунд і перевірте, що все запустилося:
+```bash
+docker-compose ps
+```
+
+Обидва контейнери мають бути у статусі `Up`.
+
+**Крок 5.** Відкрийте у браузері:
+```
+http://localhost:8080/demo/viewServlet
+```
+
+> Або скористайтеся скриптом, який виконає кроки 2-4 автоматично:
+> ```bash
+> # Linux/Mac
+> ./docker-build.sh
+>
+> # Windows
+> docker-build.bat
+> ```
+
+### Корисні команди Docker
+
+```bash
+# Переглянути логи сервера (Ctrl+C щоб вийти)
+docker-compose logs -f wildfly
+
+# Зупинити все
 docker-compose down
 
-# Rebuild and restart
-docker-compose up --build -d
+# Перезібрати після змін у коді
+mvn clean package && docker-compose restart wildfly
 ```
 
-## Manual Setup (Alternative)
+## Запуск без Docker (вручну)
 
-To run this application manually, you need to:
+Якщо Docker не встановлено, можна налаштувати все вручну.
 
-1. Fork this project (preferred) or clone the repository
+### Що потрібно встановити
 
-```bash
-git clone https://github.com/OKaluzny/servletApp.git
-```
+1. **Java 17+**
+2. **Maven**
+3. **PostgreSQL** — [завантажити](https://www.postgresql.org/download/)
+4. **WildFly 29** — [завантажити](https://www.wildfly.org/downloads/)
 
-2. Build this application using Maven
+### Крок 1. Створіть базу даних
 
-```bash
-mvn clean install -Dmaven.plugin.validation=VERBOSE
-```
-
-3. Download and install WildFly from https://www.wildfly.org/. Start WildFly by going to the /bin directory and running standalone, then deploy the application using the command:
-
-```bash
-mvn org.wildfly.plugins:wildfly-maven-plugin:4.2.0.Final:deploy
-```
-
-4. Download and install Postman REST client
-
-5. Download and install PostgreSQL database, create the Employee database:
+Відкрийте термінал PostgreSQL (`psql`) і виконайте:
 
 ```sql
-DROP DATABASE IF EXISTS Employee;
+CREATE DATABASE employee;
 
-CREATE DATABASE Employee;
-
-\c Employee;
+\c employee;
 
 CREATE TABLE IF NOT EXISTS public.users
 (
@@ -89,36 +205,67 @@ CREATE TABLE IF NOT EXISTS public.users
 );
 ```
 
-## IDE Database Configuration
+### Крок 2. Зберіть проєкт
 
-To enable SQL code assistance and eliminate IDE warnings about missing data sources, configure your IDE to connect to the PostgreSQL database:
+```bash
+mvn clean package
+```
 
-> **Note**: If you see warnings like "No data sources are configured to run this SQL and provide advanced code assistance" in your IDE, follow the configuration steps below to resolve them.
+### Крок 3. Запустіть WildFly
 
-### IntelliJ IDEA / DataGrip Configuration
+Перейдіть до теки WildFly та запустіть сервер:
 
-1. **Using Docker (Recommended)**:
-   - Start the application with Docker: `./docker-build.sh` or `docker-build.bat`
-   - In IntelliJ IDEA, go to **View** → **Tool Windows** → **Database**
-   - Click the **+** button and select **Data Source** → **PostgreSQL**
-   - Configure the connection:
-     - **Host**: `localhost`
-     - **Port**: `5432`
-     - **Database**: `employee`
-     - **User**: `postgres`
-     - **Password**: `postgres`
-   - Test the connection and apply
+```bash
+cd wildfly-29.0.1.Final/bin
+./standalone.sh     # Linux/Mac
+standalone.bat      # Windows
+```
 
-2. **Manual PostgreSQL Setup**:
-   - Install PostgreSQL locally
-   - Create the database using the SQL commands above
-   - Configure the data source with your local PostgreSQL credentials
+### Крок 4. Розгорніть застосунок
 
-### Other IDEs
+В іншому терміналі, з теки проєкту:
 
-For other IDEs (Eclipse, VS Code, etc.), configure a PostgreSQL connection using:
-- **JDBC URL**: `jdbc:postgresql://localhost:5432/employee`
-- **Username**: `postgres`
-- **Password**: `postgres`
+```bash
+mvn org.wildfly.plugins:wildfly-maven-plugin:4.2.0.Final:deploy
+```
 
-Once configured, your IDE will provide SQL syntax highlighting, code completion, and validation for database queries.
+### Крок 5. Відкрийте у браузері
+
+```
+http://localhost:8080/demo/viewServlet
+```
+
+## Підключення IDE до бази даних
+
+Щоб IDE підказувала SQL-запити, підключіть її до PostgreSQL.
+
+### IntelliJ IDEA
+
+1. **View** → **Tool Windows** → **Database**
+2. Натисніть **+** → **Data Source** → **PostgreSQL**
+3. Заповніть:
+   - **Host:** `localhost`
+   - **Port:** `5432`
+   - **Database:** `employee`
+   - **User:** `postgres`
+   - **Password:** `postgres`
+4. Натисніть **Test Connection**, потім **OK**
+
+### Інші IDE
+
+Використовуйте JDBC URL:
+```
+jdbc:postgresql://localhost:5432/employee
+```
+Логін: `postgres`, пароль: `postgres`
+
+## Технології
+
+- Java 17
+- Jakarta Servlet API 6.0
+- JSP 3.1 + JSTL 3.0
+- PostgreSQL 15
+- WildFly 29
+- Maven
+- Docker Compose
+- JUnit 5

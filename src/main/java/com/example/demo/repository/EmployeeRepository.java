@@ -1,5 +1,7 @@
-package com.example.demo;
+package com.example.demo.repository;
 
+
+import com.example.demo.model.Employee;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -11,12 +13,6 @@ import java.util.logging.Level;
 public final class EmployeeRepository {
 
     private static final Logger logger = Logger.getLogger(EmployeeRepository.class.getName());
-
-    /*public static void main(String[] args) {
-        getConnection();
-        Employee employee = new Employee("Takeshi", "takeshi.jp@jmail.jp", "Japan");
-        save(employee);
-    }*/
 
     public static Connection getConnection() {
 
@@ -33,9 +29,9 @@ public final class EmployeeRepository {
         try {
             connection = DriverManager.getConnection(url, user, password);
             if (connection != null) {
-                System.out.println("Connected to the PostgreSQL server successfully.");
+                logger.log(Level.INFO, "Connected to the PostgreSQL server successfully.");
             } else {
-                System.out.println("Failed to make connection!");
+                logger.log(Level.WARNING, "Failed to make connection!");
             }
         } catch (SQLException sqlException) {
             logger.log(Level.SEVERE, "Failed to establish database connection", sqlException);

@@ -1,4 +1,4 @@
-package com.example.demo.filters;
+package com.example.demo.filter;
 
 
 import jakarta.servlet.*;
@@ -8,12 +8,12 @@ import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Set;
 
-/**
- * Servlet Filter implementation class RequestLoggingFilter
- */
 @WebFilter("/*")
 public class RequestLoggingFilter implements Filter {
+
+    private static final Set<String> SENSITIVE_PARAMS = Set.of("pwd", "password");
 
     private ServletContext context;
 
@@ -27,7 +27,7 @@ public class RequestLoggingFilter implements Filter {
         Enumeration<String> params = req.getParameterNames();
         while (params.hasMoreElements()) {
             String name = params.nextElement();
-            String value = request.getParameter(name);
+            String value = SENSITIVE_PARAMS.contains(name) ? "******" : request.getParameter(name);
             this.context.log(req.getRemoteAddr() + "::Request Params::{" + name + "=" + value + "}");
         }
 
@@ -37,12 +37,9 @@ public class RequestLoggingFilter implements Filter {
                 this.context.log(req.getRemoteAddr() + "::Cookie::{" + cookie.getName() + "," + cookie.getValue() + "}");
             }
         }
-        //// TODO: 30-Nov-23 pass the request along the filter chain
         chain.doFilter(request, response);
     }
 
     public void destroy() {
     }
-
 }
-
