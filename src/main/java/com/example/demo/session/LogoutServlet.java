@@ -27,12 +27,12 @@ public class LogoutServlet extends HttpServlet {
             }
         }
         HttpSession session = request.getSession(false);
-        System.out.println("User=" + session.getAttribute("user"));
         if (session != null) {
+            System.out.println("User=" + session.getAttribute("user"));
             session.invalidate();
         }
         PrintWriter out = response.getWriter();
-        out.println("Either user name or password is wrong!");
+        out.println("Logged out successfully!");
     }
 
 }

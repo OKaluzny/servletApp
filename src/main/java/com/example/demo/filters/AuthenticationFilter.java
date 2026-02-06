@@ -35,6 +35,8 @@ public class AuthenticationFilter implements Filter {
                 uri.endsWith("demo/saveServlet") ||
                         uri.endsWith("demo/viewByIDServlet") ||
                         uri.endsWith("demo/loginServlet") ||
+                        uri.endsWith("demo/deleteServlet") ||
+                        uri.endsWith("demo/putServlet") ||
                         uri.endsWith("demo/viewServlet"))) {
             this.context.log("<<< Unauthorized access request");
             PrintWriter out = res.getWriter();

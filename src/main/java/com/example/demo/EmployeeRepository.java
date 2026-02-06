@@ -45,15 +45,13 @@ public final class EmployeeRepository {
 
     public static int save(Employee employee) {
         int status = 0;
-        try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("insert into users(name,email,country) values (?,?,?)");
+        try (Connection connection = EmployeeRepository.getConnection();
+             PreparedStatement ps = connection.prepareStatement("insert into users(name,email,country) values (?,?,?)")) {
             ps.setString(1, employee.name());
             ps.setString(2, employee.email());
             ps.setString(3, employee.country());
 
             status = ps.executeUpdate();
-            connection.close();
 
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Failed to save employee", ex);
@@ -65,9 +63,8 @@ public final class EmployeeRepository {
 
         int status = 0;
 
-        try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("update users set name=?,email=?,country=? where id=?");
+        try (Connection connection = EmployeeRepository.getConnection();
+             PreparedStatement ps = connection.prepareStatement("update users set name=?,email=?,country=? where id=?")) {
 
             ps.setString(1, employee.name());
             ps.setString(2, employee.email());
@@ -75,7 +72,6 @@ public final class EmployeeRepository {
             ps.setInt(4, employee.id());
 
             status = ps.executeUpdate();
-            connection.close();
 
         } catch (SQLException sqlException) {
             logger.log(Level.SEVERE, "Failed to update employee", sqlException);
@@ -87,13 +83,10 @@ public final class EmployeeRepository {
 
         int status = 0;
 
-        try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("delete from users where id=?");
+        try (Connection connection = EmployeeRepository.getConnection();
+             PreparedStatement ps = connection.prepareStatement("delete from users where id=?")) {
             ps.setInt(1, id);
             status = ps.executeUpdate();
-
-            connection.close();
 
         } catch (SQLException exception) {
             logger.log(Level.SEVERE, "Failed to delete employee with id: " + id, exception);
@@ -101,14 +94,11 @@ public final class EmployeeRepository {
         return status;
     }
 
-    //public static List<Employee> getEmployeeById(int id) {
-    public static Optional<Object> getEmployeeById(int id) {
+    public static Optional<Employee> getEmployeeById(int id) {
 
-        //List<Employee> listEmployee = new ArrayList<>();
-        Optional<Object> optionalEmployee = Optional.of(new Object());
-        try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("select * from users where id=?");
+        Optional<Employee> optionalEmployee = Optional.empty();
+        try (Connection connection = EmployeeRepository.getConnection();
+             PreparedStatement ps = connection.prepareStatement("select * from users where id=?")) {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -118,14 +108,11 @@ public final class EmployeeRepository {
                         rs.getString(3),
                         rs.getString(4));
                 optionalEmployee = Optional.of(employee);
-                //listEmployee.add(employee);
             }
-            connection.close();
 
         } catch (SQLException exception) {
             logger.log(Level.SEVERE, "Failed to get employee by id: " + id, exception);
         }
-        //return listEmployee;
         return optionalEmployee;
     }
 
@@ -133,9 +120,8 @@ public final class EmployeeRepository {
 
         List<Employee> listEmployees = new ArrayList<>();
 
-        try {
-            Connection connection = EmployeeRepository.getConnection();
-            PreparedStatement ps = connection.prepareStatement("select * from users");
+        try (Connection connection = EmployeeRepository.getConnection();
+             PreparedStatement ps = connection.prepareStatement("select * from users")) {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -148,7 +134,6 @@ public final class EmployeeRepository {
 
                 listEmployees.add(employee);
             }
-            connection.close();
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Failed to get all employees", e);

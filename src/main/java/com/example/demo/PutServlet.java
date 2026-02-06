@@ -29,7 +29,7 @@ public class PutServlet extends HttpServlet {
 
         int status = EmployeeRepository.update(employee);
         if (status > 0) {
-            response.sendRedirect("viewByIDServlet?id=68");
+            response.sendRedirect("viewByIDServlet?id=" + id);
         } else {
             out.println("Sorry! unable to update record");
         }
