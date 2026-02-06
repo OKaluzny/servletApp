@@ -1,4 +1,12 @@
 [![CI](https://github.com/OKaluzny/servletApp/actions/workflows/ci.yml/badge.svg)](https://github.com/OKaluzny/servletApp/actions/workflows/ci.yml)
+![Java](https://img.shields.io/badge/Java-17-orange?logo=openjdk&logoColor=white)
+![Jakarta EE](https://img.shields.io/badge/Jakarta_Servlet-6.0-blue?logo=jakartaee&logoColor=white)
+![JSP](https://img.shields.io/badge/JSP-3.1-blue)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-336791?logo=postgresql&logoColor=white)
+![WildFly](https://img.shields.io/badge/WildFly-29-yellow?logo=jboss&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-3-C71A36?logo=apachemaven&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker_Compose-2496ED?logo=docker&logoColor=white)
+![JUnit](https://img.shields.io/badge/JUnit-5-25A162?logo=junit5&logoColor=white)
 
 # servletApp
 
