@@ -6,7 +6,7 @@
 ![WildFly](https://img.shields.io/badge/WildFly-29-yellow?logo=jboss&logoColor=white)
 ![Maven](https://img.shields.io/badge/Maven-3-C71A36?logo=apachemaven&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker_Compose-2496ED?logo=docker&logoColor=white)
-![JUnit](https://img.shields.io/badge/JUnit-5-25A162?logo=junit5&logoColor=white)
+![JUnit](https://img.shields.io/badge/JUnit-6-25A162?logo=junit5&logoColor=white)
 
 # servletApp
 
@@ -276,4 +276,4 @@ jdbc:postgresql://localhost:5432/employee
 - WildFly 29
 - Maven
 - Docker Compose
-- JUnit 5
+- JUnit 6
